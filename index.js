@@ -1,4 +1,4 @@
-// const fs = require('node:fs');
+const fs = require('node:fs');
 
 // fs.readFile('file.txt', 'utf8', (err) => {
 //   if (err) {
@@ -58,23 +58,32 @@
 // })
 
 const http = require("http");
-const server = http.createServer((req, res) => {
 
+const server = http.createServer((req, res) => {
+  res.setHeader("Content-Type", "text/html");
   if (req.url === "/") {
-    res.setHeader("Content-Type", "text/html");
-    res.write("<html> <head> <title> Node-pr</title> </head> </body>");
-    res.write("<h1> Sampling sample</h1>");
-    res.write("</body> </html>");
-    
+    fs.readFile('./index.html', function(err, data) {
+      if (err) {
+        res.end(JSON.stringify(err));
+        return;
+      }
+      res.write(data);
+      res.end();
+
+    });
   }
+
   if (req.url === "/login") {
-    res.setHeader("Content-Type", "text/html");
-    res.write("<html> <head> <title> Login page</title> </head> </body>");
-    res.write("<h1>Login page</h1>");
-    res.write("</body> </html>");
-    res.end();
+    fs.readFile('./login.html', function(err, data) {
+      if (err) {
+        res.end(JSON.stringify(err));
+        return;
+      }
+      res.write(data);
+      res.end();
+
+    });
   }
-  res.end();
 });
 
 const port = 3000;
