@@ -7,6 +7,7 @@ const app = express(); //  creating an instance of an Express application.
 // its job is to take the req manipulate it and respond it to the next middleware function or the route handler or the client
 
 app.use(express.json());
+app.use(customsystemloggermiddleware);
 
 let courses = [
   { id: 1, name: "course1" },
@@ -33,13 +34,15 @@ app.post("/courses", (req, res) => {
 // if we want to change the data on the server also ?
 
 app.put("/courses/:id", (req, res) => {
-    let courseId = parseInt(req.params.id);
-    let course = courses.find(c => c.id === courseId);
     
-    // If the course doesn't exist, send a 404 response
-    if (!courseId) {
-      return res.status(404).send("The course with the given ID was not found.");
-    }
+  let courseId = parseInt(req.params.id);
+  // find the course with the given id
+  let course = courses.find((c) => c.id === courseId);
+
+  // If the course doesn't exist, send a 404 response
+  if (!courseId) {
+    return res.status(404).send("The course with the given ID was not found.");
+  }
 
   // Update the course's name
   course.name = req.body.name;
@@ -50,19 +53,37 @@ app.put("/courses/:id", (req, res) => {
 
 app.delete("/courses/:id", (req, res) => {
   let courseId = parseInt(req.params.id);
-  // what does req.params.id do ? 
-    // it extracts the id from the url
-    // if the url is /courses/1 then req.params.id will be 1
+  // what does req.params.id do ?
+  // it extracts the id from the url
+  // if the url is /courses/1 then req.params.id will be 1
 
   if (courseId === -1) {
     return res.status(404).send("The course with the given ID was not found.");
   }
 
-  courses.splice(courseId-1,1);
+  courses.splice(courseId - 1, 1);
 
   // Send the updated list of courses as a response
   res.send(courses);
 });
+function customsystemloggermiddleware(req, res, next) {
+  console.log("middleware started");
+  const hostname = req.hostname;
+  const ip = req.ip;
+  const date = new Date().toISOString();
+
+  console.log(`Hostname: ${hostname}`);
+  console.log(`IP: ${ip}`);
+  console.log(`Date: ${date}`);
+
+  next();
+  // what does next() do ? 
+    // it tells the express that the middleware function has done its job and it can now move on to the next middleware function or the route handler
+  
+
+  console.log("middleware ended");
+}
+
 
 // server needs to listen on a port to be able to serve requests
 app.listen(3000, () => console.log("Listening on port 3000..."));
