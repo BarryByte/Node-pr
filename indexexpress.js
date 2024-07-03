@@ -34,14 +34,15 @@ app.post("/courses", (req, res) => {
 
 app.put("/courses/:id", (req, res) => {
     let courseId = parseInt(req.params.id);
-
-  // If the course doesn't exist, send a 404 response
-  if (!courseId) {
-    return res.status(404).send("The course with the given ID was not found.");
-  }
+    let course = courses.find(c => c.id === courseId);
+    
+    // If the course doesn't exist, send a 404 response
+    if (!courseId) {
+      return res.status(404).send("The course with the given ID was not found.");
+    }
 
   // Update the course's name
-  courseId.name = req.body.name;
+  course.name = req.body.name;
 
   // Send the updated list of courses as a response
   res.send(courses);
