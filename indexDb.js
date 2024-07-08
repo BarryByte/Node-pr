@@ -24,6 +24,10 @@ const productRoutes = require("./routes/productRoutes");
 
 app.use('/api/products', productRoutes)
 
+const userRoutes = require("./routes/userRoutes");
+
+app.use('/api/user', userRoutes)
+
 
 app.listen(3002, () => {
 	console.log("Server sarted at port 3002");
